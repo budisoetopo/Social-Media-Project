@@ -1,8 +1,6 @@
-# Assignment 7 - Restaurant App
+# Project - Social Media App
 
-Hallo team, berikut saya bantu buatkan dokumen, agar kalian lebih mudah dalam pengerjaan project ini ya, baca dokumen ini sampai selesai sebelum mulai ngoding.
-Dokumen ini menjelaskan apa yang harus dibangun, batasan teknis, saran struktur project,
-serta cara penilaiannya. Implementasi tetap kalian kerjakan sendiri.
+Ini adalah project assignment yang merupakan bagian dari program Ahademy WPH.
 
 ---
 
