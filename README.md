@@ -6,7 +6,7 @@ Ini adalah project assignment yang merupakan bagian dari program Ahademy WPH.
 
 ## 1. Ringkasan
 
-Kalian akan membangun sebuah **Restaurant App** (aplikasi pemesanan makanan) dari awal
+Kalian akan membangun sebuah **Social Media App** (aplikasi pemesanan makanan) dari awal
 menggunakan data asli dari REST API yang sudah disediakan. Aplikasi harus mengikuti
 desain di Figma dan menjalankan flow user secara utuh: lihat daftar restoran, filter,
 lihat detail menu, masuk ke cart, checkout, sampai melihat history pesanan.
@@ -54,9 +54,9 @@ Library lain di atas belum terpasang, jadi kalian yang install dan setup sendiri
 
 ## 4. Resource
 
-- Figma desain: https://www.figma.com/design/mOJNvaD7zbyo5ZPdMEehOo/Restaurant-App---assignment-10
-- API base URL: `https://be-restaurant-production.up.railway.app`
-- API docs (Swagger): https://be-restaurant-production.up.railway.app/api-swagger/
+- Figma desain: https://www.figma.com/design/mOJNvaD7zbyo5ZPdMEehOo/Social Media-App---assignment-10
+- API base URL: `https://be-Social Media-production.up.railway.app`
+- API docs (Swagger): https://be-Social Media-production.up.railway.app/api-swagger/
 
 Semua endpoint diawali prefix `/api`. Untuk endpoint yang butuh login, kirim header:
 
@@ -99,21 +99,21 @@ response tetap cek di Swagger. Tanda (auth) artinya butuh Bearer token.
 ### Cart (auth)
 
 - `GET /api/cart` - isi cart dikelompokkan per restoran
-- `POST /api/cart` - body: `restaurantId`, `menuId`, `quantity`
+- `POST /api/cart` - body: `Social MediaId`, `menuId`, `quantity`
 - `PUT /api/cart/{id}` - body: `quantity`
 - `DELETE /api/cart/{id}` - hapus 1 item
 - `DELETE /api/cart` - kosongkan seluruh cart
 
 ### Order / Checkout (auth)
 
-- `POST /api/order/checkout` - body: `restaurants` (array berisi `restaurantId` dan `items[{ menuId, quantity }]`), `deliveryAddress`, opsional `phone`, `paymentMethod`, `notes`
+- `POST /api/order/checkout` - body: `Social Medias` (array berisi `Social MediaId` dan `items[{ menuId, quantity }]`), `deliveryAddress`, opsional `phone`, `paymentMethod`, `notes`
 - `GET /api/order/my-order` - history pesanan. Query: `status`, `page`, `limit`
 
 ### Review (auth)
 
-- `POST /api/review` - body: `transactionId`, `restaurantId`, `star`, `comment`, opsional `menuIds`
+- `POST /api/review` - body: `transactionId`, `Social MediaId`, `star`, `comment`, opsional `menuIds`
 - `GET /api/review/my-reviews`
-- `GET /api/review/restaurant/{restaurantId}`
+- `GET /api/review/Social Media/{Social MediaId}`
 - `PUT /api/review/{id}` dan `DELETE /api/review/{id}`
 
 ---
@@ -164,7 +164,7 @@ fitur dipakai sebagai acuan kapan fitur dianggap "selesai".
 
 - Form alamat pengiriman + metode pembayaran + catatan sesuai desain, divalidasi
   dengan Zod.
-- Submit ke `POST /api/order/checkout` dengan struktur `restaurants` yang benar.
+- Submit ke `POST /api/order/checkout` dengan struktur `Social Medias` yang benar.
 - Setelah sukses, user dapat konfirmasi dan diarahkan ke history / success page.
 
 ### 6.7 History Pesanan
@@ -310,7 +310,7 @@ npm run lint     # cek lint
 - Hindari prop drilling berlebihan dan komponen yang terlalu besar. Pecah jadi
   komponen kecil yang reusable.
 - Jangan menaruh logic fetching langsung di dalam komponen UI. Bungkus dalam
-  custom hook (mis. `useRestaurants`, `useCart`).
+  custom hook (mis. `useSocial Medias`, `useCart`).
 
 ---
 
@@ -318,7 +318,7 @@ npm run lint     # cek lint
 
 | Aspek                               | Bobot     | Kriteria                                                                                                              |
 | ----------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------- |
-| Implementasi Fungsionalitas MVP     | 40 persen | Seluruh fitur utama Restaurant App berjalan sesuai flow user (menu, filter, cart, checkout, history) tanpa bug fatal. |
+| Implementasi Fungsionalitas MVP     | 40 persen | Seluruh fitur utama Social Media App berjalan sesuai flow user (menu, filter, cart, checkout, history) tanpa bug fatal. |
 | State Management dan Data Fetching  | 30 persen | Pemisahan server state (TanStack Query) dan client/UI state (Zustand) dilakukan dengan benar, konsisten, dan optimal. |
 | Routing dan Rendering Flow          | 20 persen | Penggunaan best practice di Next.js (App Router, server/client component, proteksi route, search params).             |
 | Code Quality, UI, dan Best Practice | 10 persen | Code TypeScript rapi, struktur project jelas, UI konsisten dengan Figma, dan mengikuti best practice frontend modern. |
