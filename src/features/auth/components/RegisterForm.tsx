@@ -9,7 +9,7 @@ import {
   registerSchema,
   type RegisterFormValues,
 } from '@/lib/validations/auth';
-import { Login, Logo_Red } from '../../../../public/images/imageHandler';
+import { Login, Logo } from '../../../../public/images/imageHandler';
 
 function RegisterForm() {
   const router = useRouter();
@@ -61,18 +61,18 @@ function RegisterForm() {
         />
       </div>
 
-      {/* Right Side Form */}
+      {/* Registration Form */}
       <div className='flex w-full flex-col justify-center overflow-y-auto p-8 md:h-[1024px] md:w-[720px] md:p-12 lg:p-16'>
         <div className='mx-auto w-full max-w-[420px]'>
           {/* Logo & Brand Name */}
           <div className='mb-8 flex items-center gap-3.75'>
             <img
-              src={Logo_Red}
-              alt='Foody Logo'
+              src={Logo}
+              alt='Sociality Logo'
               className='h-7 w-7 object-contain'
             />
             <span className='text-[2rem] font-extrabold leading-10.5 text-neutral-950'>
-              Foody
+              Sociality
             </span>
           </div>
 

@@ -91,7 +91,7 @@ function Navbar() {
               alt='Foody Logo'
               className='h-7 w-7 object-contain'
             />
-            Foody
+            Sociality
           </div>
         </Link>
 

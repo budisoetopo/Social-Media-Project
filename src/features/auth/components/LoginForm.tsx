@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useLogin } from '../hooks/useLogin';
 import { useAuthStore } from '@/store/authStore';
 import { loginSchema, type LoginFormValues } from '@/lib/validations/auth';
-import { Login, Logo_Red } from '../../../../public/images/imageHandler';
+import { Logo } from '../../../../public/images/imageHandler';
 
 function LoginForm() {
   const router = useRouter();
@@ -45,54 +45,28 @@ function LoginForm() {
   };
 
   return (
-    <div className='flex w-full max-w-[1440px] flex-col bg-white font-sans md:h-[1024px] md:flex-row'>
-      {/* Login Image */}
-      <div className='relative h-75 w-full md:h-[1024px] md:w-[720px] md:shrink-0'>
-        <img
-          src={Login}
-          alt='Login visual'
-          className='absolute inset-0 h-full w-full object-cover object-center'
-        />
-      </div>
+    <div className='relative flex justify-center items-center min-h-screen min-w-screen overflow-hidden bg-[#050505] font-sans'>
+      {/* Purple gradient glow at the bottom */}
+      <div className='pointer-events-none absolute bottom-0 left-1/2 h-[500px] w-[800px] -translate-x-1/2 translate-y-1/3 rounded-full bg-purple-600/30 blur-[120px]' />
 
       {/* Login Form */}
-      <div className='flex w-full flex-col justify-center p-8 md:w-[720px] md:p-16 lg:p-20'>
-        <div className='mx-auto w-full max-w-[400px]'>
+      <div className='relative z-10 w-full md:w-111.5 py-10 px-6 border border-green-500'>
+        <div className='mx-auto border border-blue-500'>
           {/* Logo */}
-          <div className='mb-8 flex items-center gap-3.75'>
+          <div className='flex items-center justify-center gap-3.75'>
             <img
-              src={Logo_Red}
-              alt='Foody Logo'
+              src={Logo}
+              alt='Sociality Logo'
               className='h-7 w-7 object-contain'
             />
-            <span className='text-[2rem] font-extrabold leading-10.5 text-neutral-950'>
-              Foody
+            <span className='text-2xl leading-9 font-bold text-neutral-25'>
+              Sociality
             </span>
           </div>
 
-          <h1 className='mb-1 text-[1.75rem] font-extrabold leading-9.5 text-neutral-950'>
+          <h1 className='flex justify-center text-2xl font-bold leading-9 text-white'>
             Welcome Back
           </h1>
-          <p className='mb-8 text-base font-medium leading-7.5 text-neutral-950'>
-            Good to see you again! Let's eat
-          </p>
-
-          {/* Toggle */}
-          <div className='mb-6 flex rounded-lg bg-neutral-100 p-2'>
-            <button
-              type='button'
-              className='flex-1 rounded-md bg-white py-1.25 text-base leading-7.5 font-bold text-neutral-950 shadow-sm'
-            >
-              Sign in
-            </button>
-            <button
-              type='button'
-              onClick={() => router.push('/register')}
-              className='flex-1 rounded-md py-2 text-[0.875rem] font-medium text-neutral-500 hover:text-neutral-950 hover:font-bold transition-colors'
-            >
-              Sign up
-            </button>
-          </div>
 
           <form
             onSubmit={handleSubmit(onSubmit)}
@@ -100,20 +74,20 @@ function LoginForm() {
           >
             {/* Email */}
             <div>
-              <div className='relative'>
+              <label
+                htmlFor='email'
+                className='text-sm leading-7 tracking-[-0.02em] font-bold text-neutral-25'
+              >
+                Email
+              </label>
+              <div>
                 <input
                   type='email'
                   id='email'
-                  placeholder=' '
-                  className='peer h-14 w-full rounded-lg border border-neutral-300 bg-transparent px-4 pt-6 pb-1 text-sm font-normal text-gray-900 focus:border-neutral-300 focus:outline-none focus:ring-1 focus:ring-neutral-300'
+                  placeholder='Enter your email'
+                  className='h-14 w-full rounded-xl border border-neutral-800 bg-[#111111] px-4 text-sm font-normal text-white placeholder:text-neutral-500 focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500'
                   {...register('email')}
                 />
-                <label
-                  htmlFor='email'
-                  className='pointer-events-none absolute left-4 top-2 text-xs text-neutral-500 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-sm peer-focus:top-2 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-neutral-500'
-                >
-                  Email
-                </label>
               </div>
               {errors.email && (
                 <p className='mt-1 text-xs text-red-500'>
@@ -124,20 +98,26 @@ function LoginForm() {
 
             {/* Password */}
             <div>
+              <label
+                htmlFor='Password'
+                className='text-sm leading-7 tracking-[-0.02em] font-bold text-neutral-25'
+              >
+                Password
+              </label>
               <div className='relative'>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   id='password'
-                  placeholder=' '
-                  className='peer h-14 w-full rounded-lg border border-neutral-300 bg-transparent px-4 pr-12 pt-6 pb-1 text-sm font-normal text-gray-900 focus:border-neutral-300 focus:outline-none focus:ring-1 focus:ring-neutral-300'
+                  placeholder='Password'
+                  className='h-14 w-full rounded-xl border border-neutral-800 bg-[#111111] px-4 text-sm font-normal text-white placeholder:text-neutral-500 focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500'
                   {...register('password')}
                 />
-                <label
+                {/* <label
                   htmlFor='password'
                   className='pointer-events-none absolute left-4 top-2 text-xs text-neutral-500 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-sm peer-focus:top-2 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-neutral-500'
                 >
                   Password
-                </label>
+                </label> */}
                 <button
                   type='button'
                   onClick={() => setShowPassword(!showPassword)}
@@ -165,6 +145,9 @@ function LoginForm() {
             >
               {login.isPending ? 'Logging in...' : 'Login'}
             </button>
+            {/* <p>
+              Don't have an account?<link>Register</link>
+            </p> */}
           </form>
         </div>
       </div>

@@ -24,7 +24,7 @@ function Footer() {
               alt='Foody Logo'
               className='h-7 w-7 object-contain'
             />
-            Foody
+            Sociality
           </Link>
           <p className='text-sm text-gray-400 max-w-sm mb-6 leading-relaxed'>
             Enjoy homemade meals & delight delicious dishes. Freshly prepared
