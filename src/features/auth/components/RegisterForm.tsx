@@ -54,10 +54,11 @@ function RegisterForm() {
   };
 
   return (
-    <div className='relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-[#050505] font-sans'>
-      <div className='pointer-events-none absolute bottom-0 left-1/2 h-125 w-200 -translate-x-1/2 translate-y-1/3 rounded-full bg-purple-600/30 blur-[120px]' />
+    <div className='flex justify-center items-center bg-transparent'>
+      <div className='absolute z-1 min-h-screen min-w-screen overflow-hidden bg-linear-to-tr from-primary-300 via-[#050505] via-40% to-base-black font-sans'></div>
+      <div className='absolute z-1 min-h-screen min-w-screen overflow-hidden bg-linear-to-tl opacity-50 from-primary-200 via-[#050505] via-40% to-base-black font-sans'></div>
       {/* Register Form */}
-      <div className='relative z-10 w-98.25 md:w-111.5 py-10 px-6'>
+      <div className='relative z-10 rounded-2xl border border-[#1F1F1F] bg-[#0A0A0A] p-8 shadow-2xl w-98.25 md:w-130.75 py-10 px-6'>
         <div className='mx-auto w-full'>
           {/* Logo & Social Media Name */}
           <div className='flex items-center justify-center gap-2.75'>
@@ -249,7 +250,7 @@ function RegisterForm() {
               disabled={registerMutation.isPending}
               className='mt-2 w-full rounded-full bg-primary-300 py-3 text-base leading-7.5 tracking-[-0.02em] font-semibold text-neutral-25 transition-colors hover:bg-primary-200 disabled:opacity-70'
             >
-              {registerMutation.isPending ? 'Registering...' : 'Register'}
+              {registerMutation.isPending ? 'Submitting...' : 'Submit'}
             </button>
           </form>
 
