@@ -8,6 +8,7 @@ import { useLogin } from '../hooks/useLogin';
 import { useAuthStore } from '@/store/authStore';
 import { loginSchema, type LoginFormValues } from '@/lib/validations/auth';
 import { Logo } from '../../../../public/images/imageHandler';
+import { Eye, EyeOff } from 'lucide-react';
 
 function LoginForm() {
   const router = useRouter();
@@ -112,9 +113,9 @@ function LoginForm() {
               <button
                 type='button'
                 onClick={() => setShowPassword(!showPassword)}
-                className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600'
+                className='absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center text-neutral-500 hover:text-neutral-300 transition-colors'
               >
-                {/* Eye Icon kept as is */}
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
             {errors.password && (
@@ -123,8 +124,6 @@ function LoginForm() {
               </p>
             )}
           </div>
-
-          {error && <p className='text-center text-sm text-red-500'>{error}</p>}
 
           {/* Login button */}
           <button

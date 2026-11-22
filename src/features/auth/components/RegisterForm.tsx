@@ -10,6 +10,7 @@ import {
   type RegisterFormValues,
 } from '@/lib/validations/auth';
 import { Logo } from '../../../../public/images/imageHandler';
+import { Eye, EyeOff } from 'lucide-react';
 
 function RegisterForm() {
   const router = useRouter();
@@ -187,16 +188,16 @@ function RegisterForm() {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   id='password'
-                  placeholder='Enter your password'
+                  placeholder='Password'
                   className='py-2.25 w-full rounded-xl border border-neutral-800 bg-neutral-950 px-4 text-base text-neutral-25 leading-7.5 tracking-[-0.02em] placeholder:text-neutral-600 placeholder:font-normal focus:border-accent-red focus:outline-none focus:ring-1 focus:ring-accent-red'
                   {...register('password')}
                 />
                 <button
                   type='button'
                   onClick={() => setShowPassword(!showPassword)}
-                  className='absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-300'
+                  className='absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center text-neutral-500 hover:text-neutral-300 transition-colors'
                 >
-                  {/* Eye Icon kept as is */}
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
               {errors.password && (
@@ -216,18 +217,22 @@ function RegisterForm() {
               </label>
               <div className='relative'>
                 <input
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  id='confirmPassword'
-                  placeholder='Confirm your password'
+                  type={showPassword ? 'text' : 'password'}
+                  id='password'
+                  placeholder='Password'
                   className='py-2.25 w-full rounded-xl border border-neutral-800 bg-neutral-950 px-4 text-base text-neutral-25 leading-7.5 tracking-[-0.02em] placeholder:text-neutral-600 placeholder:font-normal focus:border-accent-red focus:outline-none focus:ring-1 focus:ring-accent-red'
                   {...register('confirmPassword' as any)}
                 />
                 <button
                   type='button'
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className='absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-300'
+                  className='absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center text-neutral-500 hover:text-neutral-300 transition-colors'
                 >
-                  {/* Eye Icon kept as is */}
+                  {showConfirmPassword ? (
+                    <EyeOff size={20} />
+                  ) : (
+                    <Eye size={20} />
+                  )}
                 </button>
               </div>
               {errors.confirmPassword && (
