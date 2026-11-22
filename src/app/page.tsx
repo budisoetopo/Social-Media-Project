@@ -1,7 +1,6 @@
 'use client';
 
 import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
 import Hero from '@/features/home/components/Hero';
 import { useState } from 'react';
 import Link from 'next/link';
@@ -133,8 +132,6 @@ function HomePage() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

@@ -1,6 +1,5 @@
 export const Hero = '/images/Hero.png';
 export const Login = '/images/Login.png';
-export const Logo_Red = '/images/Logo_red.svg';
 export const Logo = '/images/Logo.svg';
 export const Avatar_Image = '/images/Avatar_Image.png';
 export const all_restaurant = '/images/all_restaurant.svg';

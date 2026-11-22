@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import ProfileSidebar from '@/components/layout/ProfileSidebar';
-import Footer from '@/components/layout/Footer';
 import { useAuthStore } from '@/store/authStore';
 import Image from 'next/image';
 import { Avatar_Image } from '../../../public/images/imageHandler';
@@ -132,8 +131,6 @@ function ProfilePage() {
           </div>
         </div>
       </main>
-
-      <Footer />
 
       {/* Update Profile Modal */}
       {isModalOpen && (

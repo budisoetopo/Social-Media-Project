@@ -7,11 +7,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { ShoppingBag, MapPin, FileText, LogOut } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import Image from 'next/image';
-import {
-  Avatar_Image,
-  Logo,
-  Logo_Red,
-} from '../../../public/images/imageHandler';
+import { Avatar_Image, Logo } from '../../../public/images/imageHandler';
 
 function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -76,19 +72,19 @@ function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        useDarkText ? 'bg-white shadow-md py-3' : 'bg-transparent py-5'
+      className={`fixed top-0 w-full z-50 transition-all duration-300 border-b border-neutral-800 ${
+        isScrolled
+          ? 'bg-[#050505]/95 backdrop-blur-md py-3'
+          : 'bg-[#050505] py-4'
       }`}
     >
       <div className='w-full max-w-360 mx-auto px-4 md:px-30 flex items-center justify-between'>
         {/* Logo */}
         <Link href='/' className='flex items-center gap-2'>
-          <div
-            className={`text-2xl font-bold flex items-center gap-3.75 ${useDarkText ? 'text-black' : 'text-white'}`}
-          >
+          <div className='text-2xl font-bold flex items-center gap-3.75 text-white'>
             <img
-              src={useDarkText ? Logo_Red : Logo}
-              alt='Foody Logo'
+              src={Logo}
+              alt='Sociality Logo'
               className='h-7 w-7 object-contain'
             />
             Sociality
@@ -107,7 +103,7 @@ function Navbar() {
 
                 {/* Badge relies on TanStack Query data */}
                 {cartCount > 0 && (
-                  <span className='absolute top-0 right-0 bg-[#DA2E28] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full translate-x-1/4 -translate-y-1/4'>
+                  <span className='absolute top-0 right-0 bg-[#8b5cf6] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full translate-x-1/4 -translate-y-1/4'>
                     {cartCount}
                   </span>
                 )}
@@ -127,10 +123,7 @@ function Navbar() {
                       className='object-cover'
                     />
                   </div>
-                  {/* Change Name Color when Scrolling to ensure visibility */}
-                  <span
-                    className={`text-sm font-medium ${useDarkText ? 'text-black' : 'text-white'}`}
-                  >
+                  <span className='text-sm font-medium text-white'>
                     {user?.name || 'John Doe'}
                   </span>
                 </button>
@@ -139,15 +132,14 @@ function Navbar() {
                 {isMenuOpen && (
                   <div
                     role='menu'
-                    className='absolute right-0 mt-4 w-60 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 z-50'
+                    className='absolute right-0 mt-4 w-60 bg-[#111111] rounded-2xl shadow-xl border border-neutral-800 p-4 z-50'
                   >
-                    {/* Clickable User Header -> Navigates to Profile */}
                     <Link
                       href='/profile'
                       onClick={() => setIsMenuOpen(false)}
-                      className='flex items-center gap-3 mb-4 px-2 p-2 -m-2 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer'
+                      className='flex items-center gap-3 mb-4 px-2 p-2 -m-2 rounded-xl hover:bg-neutral-800/50 transition-colors cursor-pointer'
                     >
-                      <div className='w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center border border-orange-200 overflow-hidden relative shrink-0'>
+                      <div className='w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center border border-neutral-700 overflow-hidden relative shrink-0'>
                         <Image
                           src={user?.avatar || Avatar_Image}
                           alt='User'
@@ -203,15 +195,15 @@ function Navbar() {
             <div className='flex items-center gap-3'>
               <Link
                 href='/login'
-                className={`px-6 py-2 text-sm font-medium border rounded-full hover:bg-white/10 transition-colors ${useDarkText ? 'border-gray-500 text-black' : 'border-white text-white'}`}
+                className='px-6 py-2 text-sm font-medium border border-neutral-700 text-white rounded-full hover:bg-neutral-800 transition-colors'
               >
-                Sign In
+                Login
               </Link>
               <Link
                 href='/register'
-                className={`px-6 py-2 text-sm font-medium text-gray-900 border bg-white rounded-full hover:bg-gray-300 transition-colors ${useDarkText ? 'border-gray-500' : 'border-white'}`}
+                className='px-6 py-2 text-sm font-medium bg-[#8b5cf6] text-white rounded-full hover:bg-purple-700 transition-colors'
               >
-                Sign Up
+                Register
               </Link>
             </div>
           )}

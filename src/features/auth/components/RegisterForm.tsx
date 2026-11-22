@@ -9,7 +9,7 @@ import {
   registerSchema,
   type RegisterFormValues,
 } from '@/lib/validations/auth';
-import { Login, Logo } from '../../../../public/images/imageHandler';
+import { Logo } from '../../../../public/images/imageHandler';
 
 function RegisterForm() {
   const router = useRouter();
@@ -22,8 +22,11 @@ function RegisterForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterFormValues>({
+  } = useForm<
+    RegisterFormValues & { username?: string; confirmPassword?: string }
+  >({
     resolver: zodResolver(registerSchema),
+    mode: 'onTouched',
   });
 
   const onSubmit = (values: RegisterFormValues) => {
@@ -51,174 +54,204 @@ function RegisterForm() {
   };
 
   return (
-    <div className='flex w-full max-w-[1440px] flex-col bg-white font-sans md:h-[1024px] md:flex-row'>
-      {/* Left Side Image */}
-      <div className='relative h-75 w-full md:h-[1024px] md:w-[720px] md:shrink-0'>
-        <img
-          src={Login}
-          alt='Restaurant Visual'
-          className='absolute inset-0 h-full w-full object-cover object-center'
-        />
-      </div>
-
-      {/* Registration Form */}
-      <div className='flex w-full flex-col justify-center overflow-y-auto p-8 md:h-[1024px] md:w-[720px] md:p-12 lg:p-16'>
-        <div className='mx-auto w-full max-w-[420px]'>
+    <div className='relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-[#050505] font-sans'>
+      <div className='pointer-events-none absolute bottom-0 left-1/2 h-[500px] w-[800px] -translate-x-1/2 translate-y-1/3 rounded-full bg-purple-600/30 blur-[120px]' />
+      <div className='relative z-10 w-full max-w-[400px] p-6 my-8'>
+        <div className='mx-auto w-full'>
           {/* Logo & Brand Name */}
-          <div className='mb-8 flex items-center gap-3.75'>
+          <div className='mb-6 flex items-center justify-center gap-2.75'>
             <img
               src={Logo}
-              alt='Sociality Logo'
+              alt='Sociify Logo'
               className='h-7 w-7 object-contain'
             />
-            <span className='text-[2rem] font-extrabold leading-10.5 text-neutral-950'>
+            <span className='text-[2rem] font-extrabold leading-10.5 text-white'>
               Sociality
             </span>
           </div>
-
-          <h1 className='mb-1 text-[1.75rem] font-extrabold leading-9.5 text-neutral-950'>
-            Create an Account
+          <h1 className='mb-8 text-center text-[1.75rem] font-extrabold leading-9.5 text-white'>
+            Register
           </h1>
-          <p className='mb-8 text-base font-medium leading-7.5 text-neutral-950'>
-            Join us and start exploring culinary experiences!
-          </p>
-
-          {/* Toggle */}
-          <div className='mb-6 flex rounded-lg bg-neutral-100 p-2'>
-            <button
-              type='button'
-              onClick={() => router.push('/login')}
-              className='flex-1 rounded-md py-2 text-[0.875rem] font-medium text-neutral-500 hover:text-neutral-950 hover:font-bold transition-colors'
-            >
-              Sign in
-            </button>
-            <button
-              type='button'
-              className='flex-1 rounded-md bg-white py-1.25 text-base leading-7.5 font-bold text-neutral-950 shadow-sm'
-            >
-              Sign up
-            </button>
-          </div>
 
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className='flex flex-col gap-3'
+            className='flex flex-col gap-4'
           >
             {/* Name */}
-            <div>
-              <div className='relative'>
+            <div className='flex flex-col gap-1.5'>
+              <label
+                htmlFor='name'
+                className='text-sm font-medium text-neutral-400'
+              >
+                Name
+              </label>
+              <div>
                 <input
                   type='text'
                   id='name'
-                  placeholder=' '
-                  className='peer h-14 w-full rounded-lg border border-neutral-300 bg-transparent px-4 pt-6 pb-1 text-[0.875rem] font-normal text-neutral-900 focus:border-neutral-300 focus:outline-none focus:ring-1 focus:ring-neutral-300'
+                  placeholder='Enter your name'
+                  className={`h-14 w-full rounded-lg border bg-neutral-950 px-4 text-sm font-normal text-neutral-25 placeholder:text-neutral-500 focus:outline-none focus:ring-1 ${
+                    errors.name
+                      ? 'border-accent-red focus:border-accent-red focus:ring-accent-red'
+                      : 'border-neutral-800 focus:border-purple-500 focus:ring-purple-500'
+                  }`}
                   {...register('name')}
                 />
-                <label
-                  htmlFor='name'
-                  className='pointer-events-none absolute left-4 top-2 text-xs text-neutral-500 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-sm peer-focus:top-2 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-neutral-500'
-                >
-                  Name
-                </label>
               </div>
               {errors.name && (
-                <p className='mt-1 text-xs text-red-500'>
-                  {errors.name.message}
-                </p>
+                <p className='text-xs text-accent-red'>{errors.name.message}</p>
               )}
             </div>
 
-            {/* Email */}
-            <div>
-              <div className='relative'>
+            {/* Username */}
+            <div className='flex flex-col gap-1.5'>
+              <label
+                htmlFor='username'
+                className='text-sm font-medium text-neutral-400'
+              >
+                Username
+              </label>
+              <div>
                 <input
-                  type='email'
-                  id='email'
-                  placeholder=' '
-                  className='peer h-14 w-full rounded-lg border border-neutral-300 bg-transparent px-4 pt-6 pb-1 text-[0.875rem] font-normal text-neutral-900 focus:border-neutral-300 focus:outline-none focus:ring-1 focus:ring-neutral-300'
-                  {...register('email')}
+                  type='text'
+                  id='username'
+                  placeholder='Enter your username'
+                  className={`h-14 w-full rounded-lg border bg-neutral-950 px-4 text-sm font-normal text-neutral-25 placeholder:text-neutral-500 focus:outline-none focus:ring-1 ${
+                    errors.username
+                      ? 'border-accent-red focus:border-accent-red focus:ring-accent-red'
+                      : 'border-neutral-800 focus:border-purple-500 focus:ring-purple-500'
+                  }`}
+                  {...register('username' as any)}
                 />
-                <label
-                  htmlFor='email'
-                  className='pointer-events-none absolute left-4 top-2 text-xs text-neutral-500 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-sm peer-focus:top-2 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-neutral-500'
-                >
-                  Email
-                </label>
               </div>
-              {errors.email && (
-                <p className='mt-1 text-xs text-red-500'>
-                  {errors.email.message}
+              {errors.username && (
+                <p className='text-xs text-accent-red'>
+                  {errors.username.message}
                 </p>
               )}
             </div>
 
             {/* Phone Number */}
-            <div>
-              <div className='relative'>
+            <div className='flex flex-col gap-1.5'>
+              <label
+                htmlFor='phone'
+                className='text-sm font-medium text-neutral-400'
+              >
+                Number Phone
+              </label>
+              <div>
                 <input
                   type='tel'
                   id='phone'
-                  placeholder=' '
-                  className='peer h-14 w-full rounded-lg border border-neutral-300 bg-transparent px-4 pt-6 pb-1 text-[0.875rem] font-normal text-neutral-900 focus:border-neutral-300 focus:outline-none focus:ring-1 focus:ring-neutral-300'
+                  placeholder='Enter your phone number'
+                  className={`h-14 w-full rounded-lg border bg-neutral-950 px-4 text-sm font-normal text-neutral-25 placeholder:text-neutral-500 focus:outline-none focus:ring-1 ${
+                    errors.phone
+                      ? 'border-accent-red focus:border-accent-red focus:ring-accent-red'
+                      : 'border-neutral-800 focus:border-purple-500 focus:ring-purple-500'
+                  }`}
                   {...register('phone')}
                 />
-                <label
-                  htmlFor='phone'
-                  className='pointer-events-none absolute left-4 top-2 text-xs text-neutral-500 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-sm peer-focus:top-2 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-neutral-500'
-                >
-                  Number Phone
-                </label>
               </div>
               {errors.phone && (
-                <p className='mt-1 text-xs text-red-500'>
+                <p className='text-xs text-accent-red'>
                   {errors.phone.message}
                 </p>
               )}
             </div>
 
+            {/* Email */}
+            <div className='flex flex-col gap-1.5'>
+              <label
+                htmlFor='email'
+                className='text-sm font-medium text-neutral-400'
+              >
+                Email
+              </label>
+              <div>
+                <input
+                  type='email'
+                  id='email'
+                  placeholder='Enter your email'
+                  className={`h-14 w-full rounded-lg border bg-neutral-950 px-4 text-sm font-normal text-neutral-25 placeholder:text-neutral-500 focus:outline-none focus:ring-1 ${
+                    errors.email
+                      ? 'border-accent-red focus:border-accent-red focus:ring-accent-red'
+                      : 'border-neutral-800 focus:border-purple-500 focus:ring-purple-500'
+                  }`}
+                  {...register('email')}
+                />
+              </div>
+              {errors.email && (
+                <p className='text-xs text-accent-red'>
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
+
             {/* Password */}
-            <div>
+            <div className='flex flex-col gap-1.5'>
+              <label
+                htmlFor='password'
+                className='text-sm font-medium text-neutral-400'
+              >
+                Password
+              </label>
               <div className='relative'>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   id='password'
-                  placeholder=' '
-                  className='peer h-14 w-full rounded-lg border border-neutral-300 bg-transparent px-4 pr-12 pt-6 pb-1 text-[0.875rem] font-normal text-neutral-900 focus:border-neutral-300 focus:outline-none focus:ring-1 focus:ring-neutral-300'
+                  placeholder='Enter your password'
+                  className={`h-14 w-full rounded-lg border bg-neutral-950 px-4 pr-12 text-sm font-normal text-neutral-25 placeholder:text-neutral-500 focus:outline-none focus:ring-1 ${
+                    errors.password
+                      ? 'border-accent-red focus:border-accent-red focus:ring-accent-red'
+                      : 'border-neutral-800 focus:border-purple-500 focus:ring-purple-500'
+                  }`}
                   {...register('password')}
                 />
-                <label
-                  htmlFor='password'
-                  className='pointer-events-none absolute left-4 top-2 text-xs text-neutral-500 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-sm peer-focus:top-2 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-neutral-500'
+                <button
+                  type='button'
+                  onClick={() => setShowPassword(!showPassword)}
+                  className='absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-300'
                 >
-                  Password
-                </label>
+                  {/* Eye Icon kept as is */}
+                </button>
               </div>
               {errors.password && (
-                <p className='mt-1 text-xs text-red-500'>
+                <p className='text-xs text-accent-red'>
                   {errors.password.message}
                 </p>
               )}
             </div>
 
             {/* Confirm Password */}
-            <div>
+            <div className='flex flex-col gap-1.5'>
+              <label
+                htmlFor='confirmPassword'
+                className='text-sm font-medium text-neutral-400'
+              >
+                Confirm Password
+              </label>
               <div className='relative'>
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
                   id='confirmPassword'
-                  placeholder=' '
-                  className='peer h-14 w-full rounded-lg border border-neutral-300 bg-transparent px-4 pr-12 pt-6 pb-1 text-[0.875rem] font-normal text-neutral-900 focus:border-neutral-300 focus:outline-none focus:ring-1 focus:ring-neutral-300'
-                  {...register('confirmPassword')}
+                  placeholder='Confirm your password'
+                  className={`h-14 w-full rounded-lg border bg-neutral-950 px-4 pr-12 text-sm font-normal text-neutral-25 placeholder:text-neutral-500 focus:outline-none focus:ring-1 ${
+                    errors.confirmPassword
+                      ? 'border-accent-red focus:border-accent-red focus:ring-accent-red'
+                      : 'border-neutral-800 focus:border-purple-500 focus:ring-purple-500'
+                  }`}
+                  {...register('confirmPassword' as any)}
                 />
-                <label
-                  htmlFor='confirmPassword'
-                  className='pointer-events-none absolute left-4 top-2 text-xs text-neutral-500 transition-all duration-200 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-sm peer-focus:top-2 peer-focus:-translate-y-0 peer-focus:text-xs peer-focus:text-neutral-500'
+                <button
+                  type='button'
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className='absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-300'
                 >
-                  Confirm Password
-                </label>
+                  {/* Eye Icon kept as is */}
+                </button>
               </div>
               {errors.confirmPassword && (
-                <p className='mt-1 text-xs text-red-500'>
+                <p className='text-xs text-accent-red'>
                   {errors.confirmPassword.message}
                 </p>
               )}
@@ -226,7 +259,7 @@ function RegisterForm() {
 
             {/* Error Display */}
             {error && (
-              <p className='text-center text-sm text-red-500 font-medium mt-2'>
+              <p className='text-center text-sm text-accent-red font-medium mt-2'>
                 {error}
               </p>
             )}
@@ -234,12 +267,25 @@ function RegisterForm() {
             {/* Register button */}
             <button
               type='submit'
-              disabled={registerMutation.isPending} // ⬅️ CHANGED — no useless `?.`
-              className='mt-4 w-full rounded-full bg-[#C40000] py-3 text-[16px] font-semibold text-white transition-colors hover:bg-red-800 disabled:opacity-70'
+              disabled={registerMutation.isPending}
+              // CHANGED: Purple button matching design
+              className='mt-4 w-full rounded-full bg-[#8b5cf6] py-3 text-[15px] font-semibold text-white transition-colors hover:bg-purple-700 disabled:opacity-70'
             >
               {registerMutation.isPending ? 'Registering...' : 'Register'}
             </button>
           </form>
+
+          {/* ADDED: Footer link matching design */}
+          <p className='mt-6 text-center text-sm text-neutral-400'>
+            Already have an account?{' '}
+            <button
+              type='button'
+              onClick={() => router.push('/login')}
+              className='font-semibold text-purple-400 hover:text-purple-300 transition-colors'
+            >
+              Log in
+            </button>
+          </p>
         </div>
       </div>
     </div>
