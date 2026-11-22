@@ -52,7 +52,7 @@ function LoginForm() {
       {/* Login Form */}
       <div className='relative z-10 w-98.25 md:w-111.5 py-10 px-6'>
         <div className='mx-auto w-full'>
-          {/* Logo */}
+          {/* Logo and Social Media Name */}
           <div className='flex items-center justify-center gap-2.75'>
             <img
               src={Logo}

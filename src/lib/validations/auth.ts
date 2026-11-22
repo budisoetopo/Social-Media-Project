@@ -10,7 +10,7 @@ export const loginSchema = z.object({
 
 export type LoginFormValues = z.infer<typeof loginSchema>;
 
-// ⬅️ ADDED — register schema (password match handled here, not in the component)
+// register schema (password match handled here, not in the component)
 export const registerSchema = z
   .object({
     name: z.string().min(1, 'Name is required'),

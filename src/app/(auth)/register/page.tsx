@@ -7,7 +7,6 @@ import { saveUsers } from '@/lib/auth';
 import RegisterForm from '@/features/auth/components/RegisterForm';
 
 function RegisterPage() {
-  // These pieces of "state" hold what the user types.
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,7 +14,7 @@ function RegisterPage() {
 
   const router = useRouter();
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = (event: React.InputEvent) => {
     event.preventDefault(); // stop the page from reloading
 
     // 1. Check that all fields are filled.
@@ -25,7 +24,7 @@ function RegisterPage() {
     }
 
     // 2. Try to save the user.
-    const success = saveUser({ name, email, password });
+    const success = saveUsers({ name, email, password });
 
     if (success) {
       setMessage('Registration successful! You can now log in.');

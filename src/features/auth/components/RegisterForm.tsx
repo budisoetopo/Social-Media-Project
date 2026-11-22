@@ -55,21 +55,22 @@ function RegisterForm() {
 
   return (
     <div className='relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-[#050505] font-sans'>
-      <div className='pointer-events-none absolute bottom-0 left-1/2 h-[500px] w-[800px] -translate-x-1/2 translate-y-1/3 rounded-full bg-purple-600/30 blur-[120px]' />
-      <div className='relative z-10 w-full max-w-[400px] p-6 my-8'>
+      <div className='pointer-events-none absolute bottom-0 left-1/2 h-125 w-200 -translate-x-1/2 translate-y-1/3 rounded-full bg-purple-600/30 blur-[120px]' />
+      {/* Register Form */}
+      <div className='relative z-10 w-98.25 md:w-111.5 py-10 px-6'>
         <div className='mx-auto w-full'>
-          {/* Logo & Brand Name */}
-          <div className='mb-6 flex items-center justify-center gap-2.75'>
+          {/* Logo & Social Media Name */}
+          <div className='flex items-center justify-center gap-2.75'>
             <img
               src={Logo}
-              alt='Sociify Logo'
+              alt='Sociality Logo'
               className='h-7 w-7 object-contain'
             />
-            <span className='text-[2rem] font-extrabold leading-10.5 text-white'>
+            <span className='text-2xl leading-9 font-bold text-neutral-25'>
               Sociality
             </span>
           </div>
-          <h1 className='mb-8 text-center text-[1.75rem] font-extrabold leading-9.5 text-white'>
+          <h1 className='my-6 flex justify-center text-2xl font-bold leading-9 text-neutral-25'>
             Register
           </h1>
 
@@ -81,7 +82,7 @@ function RegisterForm() {
             <div className='flex flex-col gap-1.5'>
               <label
                 htmlFor='name'
-                className='text-sm font-medium text-neutral-400'
+                className='text-sm leading-7 tracking-[-0.02em] font-bold text-neutral-25'
               >
                 Name
               </label>
@@ -90,16 +91,14 @@ function RegisterForm() {
                   type='text'
                   id='name'
                   placeholder='Enter your name'
-                  className={`h-14 w-full rounded-lg border bg-neutral-950 px-4 text-sm font-normal text-neutral-25 placeholder:text-neutral-500 focus:outline-none focus:ring-1 ${
-                    errors.name
-                      ? 'border-accent-red focus:border-accent-red focus:ring-accent-red'
-                      : 'border-neutral-800 focus:border-purple-500 focus:ring-purple-500'
-                  }`}
+                  className='py-2.25 w-full rounded-xl border border-neutral-800 bg-neutral-950 px-4 text-base text-neutral-25 leading-7.5 tracking-[-0.02em] placeholder:text-neutral-600 placeholder:font-normal focus:border-accent-red focus:outline-none focus:ring-1 focus:ring-accent-red'
                   {...register('name')}
                 />
               </div>
               {errors.name && (
-                <p className='text-xs text-accent-red'>{errors.name.message}</p>
+                <p className='text-sm leading-7 tracking-[-0.03em] text-accent-red'>
+                  Text Helper
+                </p>
               )}
             </div>
 
@@ -107,7 +106,7 @@ function RegisterForm() {
             <div className='flex flex-col gap-1.5'>
               <label
                 htmlFor='username'
-                className='text-sm font-medium text-neutral-400'
+                className='text-sm leading-7 tracking-[-0.02em] font-bold text-neutral-25'
               >
                 Username
               </label>
@@ -116,17 +115,13 @@ function RegisterForm() {
                   type='text'
                   id='username'
                   placeholder='Enter your username'
-                  className={`h-14 w-full rounded-lg border bg-neutral-950 px-4 text-sm font-normal text-neutral-25 placeholder:text-neutral-500 focus:outline-none focus:ring-1 ${
-                    errors.username
-                      ? 'border-accent-red focus:border-accent-red focus:ring-accent-red'
-                      : 'border-neutral-800 focus:border-purple-500 focus:ring-purple-500'
-                  }`}
+                  className='py-2.25 w-full rounded-xl border border-neutral-800 bg-neutral-950 px-4 text-base text-neutral-25 leading-7.5 tracking-[-0.02em] placeholder:text-neutral-600 placeholder:font-normal focus:border-accent-red focus:outline-none focus:ring-1 focus:ring-accent-red'
                   {...register('username' as any)}
                 />
               </div>
               {errors.username && (
-                <p className='text-xs text-accent-red'>
-                  {errors.username.message}
+                <p className='text-sm leading-7 tracking-[-0.03em] text-accent-red'>
+                  Text Helper
                 </p>
               )}
             </div>
@@ -135,7 +130,7 @@ function RegisterForm() {
             <div className='flex flex-col gap-1.5'>
               <label
                 htmlFor='phone'
-                className='text-sm font-medium text-neutral-400'
+                className='text-sm leading-7 tracking-[-0.02em] font-bold text-neutral-25'
               >
                 Number Phone
               </label>
@@ -144,17 +139,13 @@ function RegisterForm() {
                   type='tel'
                   id='phone'
                   placeholder='Enter your phone number'
-                  className={`h-14 w-full rounded-lg border bg-neutral-950 px-4 text-sm font-normal text-neutral-25 placeholder:text-neutral-500 focus:outline-none focus:ring-1 ${
-                    errors.phone
-                      ? 'border-accent-red focus:border-accent-red focus:ring-accent-red'
-                      : 'border-neutral-800 focus:border-purple-500 focus:ring-purple-500'
-                  }`}
+                  className='py-2.25 w-full rounded-xl border border-neutral-800 bg-neutral-950 px-4 text-base text-neutral-25 leading-7.5 tracking-[-0.02em] placeholder:text-neutral-600 placeholder:font-normal focus:border-accent-red focus:outline-none focus:ring-1 focus:ring-accent-red'
                   {...register('phone')}
                 />
               </div>
               {errors.phone && (
-                <p className='text-xs text-accent-red'>
-                  {errors.phone.message}
+                <p className='text-sm leading-7 tracking-[-0.03em] text-accent-red'>
+                  Text Helper
                 </p>
               )}
             </div>
@@ -163,7 +154,7 @@ function RegisterForm() {
             <div className='flex flex-col gap-1.5'>
               <label
                 htmlFor='email'
-                className='text-sm font-medium text-neutral-400'
+                className='text-sm leading-7 tracking-[-0.02em] font-bold text-neutral-25'
               >
                 Email
               </label>
@@ -172,17 +163,13 @@ function RegisterForm() {
                   type='email'
                   id='email'
                   placeholder='Enter your email'
-                  className={`h-14 w-full rounded-lg border bg-neutral-950 px-4 text-sm font-normal text-neutral-25 placeholder:text-neutral-500 focus:outline-none focus:ring-1 ${
-                    errors.email
-                      ? 'border-accent-red focus:border-accent-red focus:ring-accent-red'
-                      : 'border-neutral-800 focus:border-purple-500 focus:ring-purple-500'
-                  }`}
+                  className='py-2.25 w-full rounded-xl border border-neutral-800 bg-neutral-950 px-4 text-base text-neutral-25 leading-7.5 tracking-[-0.02em] placeholder:text-neutral-600 placeholder:font-normal focus:border-accent-red focus:outline-none focus:ring-1 focus:ring-accent-red'
                   {...register('email')}
                 />
               </div>
               {errors.email && (
-                <p className='text-xs text-accent-red'>
-                  {errors.email.message}
+                <p className='text-sm leading-7 tracking-[-0.03em] text-accent-red'>
+                  Text Helper
                 </p>
               )}
             </div>
@@ -191,7 +178,7 @@ function RegisterForm() {
             <div className='flex flex-col gap-1.5'>
               <label
                 htmlFor='password'
-                className='text-sm font-medium text-neutral-400'
+                className='text-sm leading-7 tracking-[-0.02em] font-bold text-neutral-25'
               >
                 Password
               </label>
@@ -200,11 +187,7 @@ function RegisterForm() {
                   type={showPassword ? 'text' : 'password'}
                   id='password'
                   placeholder='Enter your password'
-                  className={`h-14 w-full rounded-lg border bg-neutral-950 px-4 pr-12 text-sm font-normal text-neutral-25 placeholder:text-neutral-500 focus:outline-none focus:ring-1 ${
-                    errors.password
-                      ? 'border-accent-red focus:border-accent-red focus:ring-accent-red'
-                      : 'border-neutral-800 focus:border-purple-500 focus:ring-purple-500'
-                  }`}
+                  className='py-2.25 w-full rounded-xl border border-neutral-800 bg-neutral-950 px-4 text-base text-neutral-25 leading-7.5 tracking-[-0.02em] placeholder:text-neutral-600 placeholder:font-normal focus:border-accent-red focus:outline-none focus:ring-1 focus:ring-accent-red'
                   {...register('password')}
                 />
                 <button
@@ -216,8 +199,8 @@ function RegisterForm() {
                 </button>
               </div>
               {errors.password && (
-                <p className='text-xs text-accent-red'>
-                  {errors.password.message}
+                <p className='text-sm leading-7 tracking-[-0.03em] text-accent-red'>
+                  Text Helper
                 </p>
               )}
             </div>
@@ -226,7 +209,7 @@ function RegisterForm() {
             <div className='flex flex-col gap-1.5'>
               <label
                 htmlFor='confirmPassword'
-                className='text-sm font-medium text-neutral-400'
+                className='text-sm leading-7 tracking-[-0.02em] font-bold text-neutral-25'
               >
                 Confirm Password
               </label>
@@ -235,11 +218,7 @@ function RegisterForm() {
                   type={showConfirmPassword ? 'text' : 'password'}
                   id='confirmPassword'
                   placeholder='Confirm your password'
-                  className={`h-14 w-full rounded-lg border bg-neutral-950 px-4 pr-12 text-sm font-normal text-neutral-25 placeholder:text-neutral-500 focus:outline-none focus:ring-1 ${
-                    errors.confirmPassword
-                      ? 'border-accent-red focus:border-accent-red focus:ring-accent-red'
-                      : 'border-neutral-800 focus:border-purple-500 focus:ring-purple-500'
-                  }`}
+                  className='py-2.25 w-full rounded-xl border border-neutral-800 bg-neutral-950 px-4 text-base text-neutral-25 leading-7.5 tracking-[-0.02em] placeholder:text-neutral-600 placeholder:font-normal focus:border-accent-red focus:outline-none focus:ring-1 focus:ring-accent-red'
                   {...register('confirmPassword' as any)}
                 />
                 <button
@@ -251,8 +230,8 @@ function RegisterForm() {
                 </button>
               </div>
               {errors.confirmPassword && (
-                <p className='text-xs text-accent-red'>
-                  {errors.confirmPassword.message}
+                <p className='text-sm leading-7 tracking-[-0.03em] text-accent-red'>
+                  Text Helper
                 </p>
               )}
             </div>
@@ -268,20 +247,18 @@ function RegisterForm() {
             <button
               type='submit'
               disabled={registerMutation.isPending}
-              // CHANGED: Purple button matching design
-              className='mt-4 w-full rounded-full bg-[#8b5cf6] py-3 text-[15px] font-semibold text-white transition-colors hover:bg-purple-700 disabled:opacity-70'
+              className='mt-2 w-full rounded-full bg-primary-300 py-3 text-base leading-7.5 tracking-[-0.02em] font-semibold text-neutral-25 transition-colors hover:bg-primary-200 disabled:opacity-70'
             >
               {registerMutation.isPending ? 'Registering...' : 'Register'}
             </button>
           </form>
 
-          {/* ADDED: Footer link matching design */}
-          <p className='mt-6 text-center text-sm text-neutral-400'>
+          <p className='mt-4 text-center text-base leading-7.5 tracking-[-0.02em] text-neutral-25'>
             Already have an account?{' '}
             <button
               type='button'
               onClick={() => router.push('/login')}
-              className='font-semibold text-purple-400 hover:text-purple-300 transition-colors'
+              className='font-semibold text-primary-200 hover:text-primary-300 transition-colors'
             >
               Log in
             </button>
