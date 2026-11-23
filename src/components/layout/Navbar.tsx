@@ -2,18 +2,17 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Bell, Settings, User as UserIcon, LogOut } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import Image from 'next/image';
-import { Avatar_Image, Logo } from '../../../public/images/imageHandler';
+import { Logo } from '../../../public/images/imageHandler';
 
 function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const pathname = usePathname();
 
   const { isAuthenticated, user, signOut } = useAuthStore();
 
@@ -55,8 +54,6 @@ function Navbar() {
           : 'bg-[#050505] py-4'
       }`}
     >
-      {/* Note: Adjusted max-w to match the timeline width (max-w-xl) if you want it centered, 
-          or keep max-w-360 for full width. I kept your original styling. */}
       <div className='w-full max-w-360 mx-auto px-4 md:px-30 flex items-center justify-between'>
         {/* Logo */}
         <Link href='/' className='flex items-center gap-2'>
@@ -74,7 +71,6 @@ function Navbar() {
         <div className='flex items-center gap-4'>
           {isAuthenticated ? (
             <div className='flex items-center gap-4'>
-              {/* CHANGED: Replaced Shopping Cart with Notifications */}
               <button className='relative p-2 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition text-white'>
                 <Bell size={18} />
                 <span className='absolute top-0 right-0 bg-[#8b5cf6] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full translate-x-1/4 -translate-y-1/4'>
@@ -88,13 +84,17 @@ function Navbar() {
                   onClick={() => setIsMenuOpen((prev) => !prev)}
                   className='flex items-center gap-2 cursor-pointer'
                 >
-                  <div className='w-8 h-8 rounded-full bg-neutral-800 overflow-hidden relative border border-neutral-700'>
-                    <Image
-                      src={user?.avatar || Avatar_Image}
-                      alt='User'
-                      fill
-                      className='object-cover'
-                    />
+                  <div className='w-8 h-8 rounded-full bg-neutral-800 overflow-hidden relative border border-neutral-700 flex items-center justify-center text-neutral-400'>
+                    {user?.avatar ? (
+                      <Image
+                        src={user.avatar}
+                        alt='User'
+                        fill
+                        className='object-cover'
+                      />
+                    ) : (
+                      <UserIcon size={16} />
+                    )}
                   </div>
                   <span className='text-sm font-medium text-white hidden sm:block'>
                     {user?.name || 'User'}
@@ -112,13 +112,17 @@ function Navbar() {
                       onClick={() => setIsMenuOpen(false)}
                       className='flex items-center gap-3 mb-4 px-2 p-2 -m-2 rounded-xl hover:bg-neutral-800/50 transition-colors cursor-pointer'
                     >
-                      <div className='w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center border border-neutral-700 overflow-hidden relative shrink-0'>
-                        <Image
-                          src={user?.avatar || Avatar_Image}
-                          alt='User'
-                          fill
-                          className='object-cover'
-                        />
+                      <div className='w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center border border-neutral-700 overflow-hidden relative shrink-0 text-neutral-400'>
+                        {user?.avatar ? (
+                          <Image
+                            src={user.avatar}
+                            alt='User'
+                            fill
+                            className='object-cover'
+                          />
+                        ) : (
+                          <UserIcon size={20} />
+                        )}
                       </div>
                       <div className='overflow-hidden'>
                         <h3 className='font-bold text-white text-sm truncate'>
