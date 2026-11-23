@@ -1,10 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useCart } from '@/features/auth/hooks/useCart';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { ShoppingBag, MapPin, FileText, LogOut } from 'lucide-react';
+import { Bell, Settings, User as UserIcon, LogOut } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import Image from 'next/image';
 import { Avatar_Image, Logo } from '../../../public/images/imageHandler';
@@ -15,28 +14,6 @@ function Navbar() {
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
-
-  // Fetch cart data using TanStack Query
-  const { data: cartData } = useCart();
-
-  // Calculate total items safely from the grouped API response
-  const cartCount =
-    cartData?.reduce((total: number, group: any) => {
-      return (
-        total +
-        group.items.reduce((sum: number, item: any) => sum + item.quantity, 0)
-      );
-    }, 0) || 0;
-
-  const isLightPage =
-    pathname === '/profile' ||
-    pathname.startsWith('/resto') ||
-    pathname.startsWith('/cart') ||
-    pathname.startsWith('/category') ||
-    pathname.startsWith('/checkout') ||
-    pathname.startsWith('/orders');
-
-  const useDarkText = isScrolled || isLightPage;
 
   const { isAuthenticated, user, signOut } = useAuthStore();
 
@@ -67,7 +44,7 @@ function Navbar() {
   const handleSignOut = () => {
     signOut();
     setIsMenuOpen(false);
-    router.push('/');
+    router.push('/login');
   };
 
   return (
@@ -78,6 +55,8 @@ function Navbar() {
           : 'bg-[#050505] py-4'
       }`}
     >
+      {/* Note: Adjusted max-w to match the timeline width (max-w-xl) if you want it centered, 
+          or keep max-w-360 for full width. I kept your original styling. */}
       <div className='w-full max-w-360 mx-auto px-4 md:px-30 flex items-center justify-between'>
         {/* Logo */}
         <Link href='/' className='flex items-center gap-2'>
@@ -95,19 +74,13 @@ function Navbar() {
         <div className='flex items-center gap-4'>
           {isAuthenticated ? (
             <div className='flex items-center gap-4'>
-              <Link
-                href='/cart'
-                className={`relative p-2 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition ${useDarkText ? 'text-black' : 'text-white'}`}
-              >
-                <ShoppingBag size={18} />
-
-                {/* Badge relies on TanStack Query data */}
-                {cartCount > 0 && (
-                  <span className='absolute top-0 right-0 bg-[#8b5cf6] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full translate-x-1/4 -translate-y-1/4'>
-                    {cartCount}
-                  </span>
-                )}
-              </Link>
+              {/* CHANGED: Replaced Shopping Cart with Notifications */}
+              <button className='relative p-2 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition text-white'>
+                <Bell size={18} />
+                <span className='absolute top-0 right-0 bg-[#8b5cf6] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full translate-x-1/4 -translate-y-1/4'>
+                  3
+                </span>
+              </button>
 
               <div className='relative' ref={menuRef}>
                 <button
@@ -115,7 +88,7 @@ function Navbar() {
                   onClick={() => setIsMenuOpen((prev) => !prev)}
                   className='flex items-center gap-2 cursor-pointer'
                 >
-                  <div className='w-8 h-8 rounded-full bg-gray-300 overflow-hidden relative border border-gray-500'>
+                  <div className='w-8 h-8 rounded-full bg-neutral-800 overflow-hidden relative border border-neutral-700'>
                     <Image
                       src={user?.avatar || Avatar_Image}
                       alt='User'
@@ -123,8 +96,8 @@ function Navbar() {
                       className='object-cover'
                     />
                   </div>
-                  <span className='text-sm font-medium text-white'>
-                    {user?.name || 'John Doe'}
+                  <span className='text-sm font-medium text-white hidden sm:block'>
+                    {user?.name || 'User'}
                   </span>
                 </button>
 
@@ -148,41 +121,44 @@ function Navbar() {
                         />
                       </div>
                       <div className='overflow-hidden'>
-                        <h3 className='font-bold text-gray-900 text-sm truncate'>
-                          {user?.name || 'John Doe'}
+                        <h3 className='font-bold text-white text-sm truncate'>
+                          {user?.name || 'User'}
                         </h3>
+                        <p className='text-xs text-neutral-400 truncate'>
+                          View Profile
+                        </p>
                       </div>
                     </Link>
 
                     {/* Navigation Links */}
-                    <ul className='flex flex-col gap-1 border-t border-gray-100 pt-3'>
+                    <ul className='flex flex-col gap-1 border-t border-neutral-800 pt-3'>
                       <li>
                         <Link
                           href='/profile'
                           onClick={() => setIsMenuOpen(false)}
-                          className='flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-600 hover:text-red-600 hover:bg-gray-50 transition-colors'
+                          className='flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-neutral-400 hover:text-white hover:bg-neutral-800/50 transition-colors'
                         >
-                          <MapPin size={18} className='text-gray-400' />
-                          <span className='font-medium'>Delivery Address</span>
+                          <UserIcon size={18} className='text-neutral-500' />
+                          <span className='font-medium'>My Profile</span>
                         </Link>
                       </li>
                       <li>
                         <Link
-                          href='/orders'
+                          href='/settings'
                           onClick={() => setIsMenuOpen(false)}
-                          className='flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-600 hover:text-red-600 hover:bg-gray-50 transition-colors'
+                          className='flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-neutral-400 hover:text-white hover:bg-neutral-800/50 transition-colors'
                         >
-                          <FileText size={18} className='text-gray-400' />
-                          <span className='font-medium'>My Orders</span>
+                          <Settings size={18} className='text-neutral-500' />
+                          <span className='font-medium'>Settings</span>
                         </Link>
                       </li>
                       <li>
                         <button
                           type='button'
                           onClick={handleSignOut}
-                          className='w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-600 hover:text-red-600 hover:bg-gray-50 transition-colors text-left'
+                          className='w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-neutral-400 hover:text-red-500 hover:bg-neutral-800/50 transition-colors text-left'
                         >
-                          <LogOut size={18} className='text-gray-400' />
+                          <LogOut size={18} className='text-neutral-500' />
                           <span className='font-medium'>Logout</span>
                         </button>
                       </li>
