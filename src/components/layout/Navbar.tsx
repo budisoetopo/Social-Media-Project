@@ -57,7 +57,7 @@ function Navbar() {
       <div className='w-full max-w-360 mx-auto px-4 md:px-30 flex items-center justify-between'>
         {/* Logo */}
         <Link href='/' className='flex items-center gap-2'>
-          <div className='text-2xl font-bold flex items-center gap-3.75 text-white'>
+          <div className='text-2xl leading-9 font-bold flex items-center gap-2.75 text-neutral-25'>
             <img
               src={Logo}
               alt='Sociality Logo'
@@ -71,11 +71,8 @@ function Navbar() {
         <div className='flex items-center gap-4'>
           {isAuthenticated ? (
             <div className='flex items-center gap-4'>
-              <button className='relative p-2 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition text-white'>
+              <button className='relative p-2 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition text-neutral-25'>
                 <Bell size={18} />
-                <span className='absolute top-0 right-0 bg-[#8b5cf6] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full translate-x-1/4 -translate-y-1/4'>
-                  3
-                </span>
               </button>
 
               <div className='relative' ref={menuRef}>
