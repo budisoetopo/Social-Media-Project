@@ -26,23 +26,40 @@ function LoginForm() {
     formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
+    mode: 'onTouched',
   });
 
   const [error, setError] = useState<string | null>(null);
 
-  const onSubmit = async (values: LoginFormValues) => {
+  const onSubmit = (values: LoginFormValues) => {
     setError(null);
-    try {
-      await login.mutateAsync(values);
-    } catch (err: any) {
-      console.error('[login] failed →', err);
-      const message =
-        err?.response?.data?.message ??
-        err?.response?.data?.error ??
-        err?.message ??
-        'Login failed';
-      setError(message);
-    }
+
+    login.mutate(values, {
+      onSuccess: () => {
+        router.push('/');
+      },
+      onError: (err: any) => {
+        console.error('Login error:', err);
+
+        const backendMessage =
+          err?.response?.data?.message || err?.response?.data?.error;
+        const validationErrors = err?.response?.data?.errors;
+
+        if (validationErrors && typeof validationErrors === 'object') {
+          const firstErrorKey = Object.keys(validationErrors)[0];
+          const firstErrorMessage = validationErrors[firstErrorKey];
+          setError(
+            Array.isArray(firstErrorMessage)
+              ? firstErrorMessage[0]
+              : String(firstErrorMessage)
+          );
+        } else {
+          setError(
+            backendMessage || err?.message || 'Invalid email or password'
+          );
+        }
+      },
+    });
   };
 
   return (
@@ -71,7 +88,7 @@ function LoginForm() {
 
         <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4'>
           {/* Email */}
-          <div>
+          <div className='flex flex-col gap-1.5'>
             <label
               htmlFor='email'
               className='text-sm leading-7 tracking-[-0.02em] font-bold text-neutral-25'
@@ -80,8 +97,8 @@ function LoginForm() {
             </label>
             <div>
               <input
-                type='email'
-                id='email'
+                type='text'
+                id='username'
                 placeholder='Enter your email'
                 className='py-2.25 w-full rounded-xl border border-neutral-800 bg-neutral-950 px-4 text-base text-neutral-25 leading-7.5 tracking-[-0.02em] placeholder:text-neutral-600 placeholder:font-normal focus:border-accent-red focus:outline-none focus:ring-1 focus:ring-accent-red'
                 {...register('email')}

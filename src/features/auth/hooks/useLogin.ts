@@ -19,7 +19,6 @@ export function useLogin() {
     },
     onSuccess: (responseData) => {
       console.log('FULL LOGIN RESPONSE:', responseData);
-
       const user = responseData.data?.user || responseData.user;
       const token =
         responseData.data?.token ||
@@ -32,7 +31,6 @@ export function useLogin() {
         throw new Error('No token returned from backend');
       }
 
-      // ✅ SAVE BOTH USER AND TOKEN TO ZUSTAND
       setAuth(user, token);
     },
   });

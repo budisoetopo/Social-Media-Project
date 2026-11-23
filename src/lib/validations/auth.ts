@@ -1,29 +1,25 @@
 import { z } from 'zod';
 
 export const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, 'Email is required')
-    .email('Please enter a valid email address'),
+  email: z.string().email('Please enter a valid email address'),
   password: z.string().min(1, 'Password is required'),
 });
 
 export type LoginFormValues = z.infer<typeof loginSchema>;
 
-// register schema (password match handled here, not in the component)
+// Password matching
 export const registerSchema = z
   .object({
     name: z.string().min(1, 'Name is required'),
-    email: z
-      .string()
-      .min(1, 'Email is required')
-      .email('Please enter a valid email address'),
-    phone: z.string().min(1, 'Phone is required'),
-    password: z.string().min(6, 'Min 6 characters'),
-    confirmPassword: z.string().min(1, 'Confirm Password is required'),
+    username: z.string().min(1, 'Username is required'),
+    // ADDED: Email
+    email: z.string().email('Please enter a valid email address'),
+    phone: z.string().min(1, 'Phone number is required'),
+    password: z.string().min(6, 'Password must be at least 6 characters'),
+    confirmPassword: z.string().min(1, 'Please confirm your password'),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
+    message: "Passwords don't match",
     path: ['confirmPassword'],
   });
 

@@ -23,31 +23,65 @@ function RegisterForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<
-    RegisterFormValues & { username?: string; confirmPassword?: string }
-  >({
+  } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     mode: 'onTouched',
   });
 
   const onSubmit = (values: RegisterFormValues) => {
     setError(null);
+
+    const generatedEmail = `${values.username.toLowerCase().replace(/\s+/g, '')}@sociality.app`;
+
+    console.log('Submitting registration with payload:', values);
+
     registerMutation.mutate(
       {
         name: values.name,
+        username: values.username,
         email: values.email,
         phone: values.phone,
         password: values.password,
       },
       {
-        onSuccess: () => router.push('/'),
+        onSuccess: () => {},
         onError: (err: any) => {
-          const backendMessage = err?.response?.data?.message;
+          console.error('Registration error in component:', err);
 
-          if (err?.response?.status === 409) {
-            setError('This email is already registered. Please login instead.');
+          const backendMessage =
+            err?.response?.data?.message || err?.response?.data?.error;
+
+          const validationErrors = err?.response?.data?.errors;
+
+          if (validationErrors && typeof validationErrors === 'object') {
+            // Extract the first specific error message from the errors object
+            const firstErrorKey = Object.keys(validationErrors)[0];
+            const firstErrorMessage = validationErrors[firstErrorKey];
+            setError(
+              Array.isArray(firstErrorMessage)
+                ? firstErrorMessage[0]
+                : String(firstErrorMessage)
+            );
+          } else if (err?.response?.status === 400) {
+            setError(backendMessage || 'Phone already in use.');
+          } else if (err?.response?.status === 422) {
+            const fieldErrors = err?.response?.data?.errors;
+            if (fieldErrors && typeof fieldErrors === 'object') {
+              const firstError = Object.values(fieldErrors)[0];
+              setError(
+                Array.isArray(firstError) ? firstError[0] : String(firstError)
+              );
+            } else {
+              setError(
+                backendMessage || 'Validation failed. Please check your input.'
+              );
+            }
           } else {
-            setError(backendMessage || err?.message || 'Registration failed');
+            setError(
+              backendMessage ||
+                err?.message ||
+                'Registration failed. Please try again.'
+            );
           }
         },
       }
@@ -55,11 +89,11 @@ function RegisterForm() {
   };
 
   return (
-    <div className='flex justify-center items-center bg-transparent'>
+    <div className='flex justify-center items-center bg-base-black'>
       <div className='absolute z-1 min-h-screen min-w-screen overflow-hidden bg-linear-to-tr from-primary-300 via-[#050505] via-40% to-base-black font-sans'></div>
       <div className='absolute z-1 min-h-screen min-w-screen overflow-hidden bg-linear-to-tl opacity-50 from-primary-200 via-[#050505] via-40% to-base-black font-sans'></div>
       {/* Register Form */}
-      <div className='relative z-10 rounded-2xl border border-[#1F1F1F] bg-[#0A0A0A] p-8 shadow-2xl w-98.25 md:w-130.75 py-10 px-6'>
+      <div className='relative z-10 rounded-2xl border border-[#1F1F1F] bg-[#0A0A0A] p-8 shadow-2xl w-98.25 md:w-130.75 py-5 px-6'>
         <div className='mx-auto w-full'>
           {/* Logo & Social Media Name */}
           <div className='flex items-center justify-center gap-2.75'>
@@ -105,7 +139,7 @@ function RegisterForm() {
             </div>
 
             {/* Username */}
-            <div className='flex flex-col gap-1.5'>
+            {/* <div className='flex flex-col gap-1.5'>
               <label
                 htmlFor='username'
                 className='text-sm leading-7 tracking-[-0.02em] font-bold text-neutral-25'
@@ -118,10 +152,34 @@ function RegisterForm() {
                   id='username'
                   placeholder='Enter your username'
                   className='py-2.25 w-full rounded-xl border border-neutral-800 bg-neutral-950 px-4 text-base text-neutral-25 leading-7.5 tracking-[-0.02em] placeholder:text-neutral-600 placeholder:font-normal focus:border-accent-red focus:outline-none focus:ring-1 focus:ring-accent-red'
-                  {...register('username' as any)}
+                  {...register('username')}
                 />
               </div>
               {errors.username && (
+                <p className='text-sm leading-7 tracking-[-0.03em] text-accent-red'>
+                  Text Helper
+                </p>
+              )}
+            </div> */}
+
+            {/* Email */}
+            <div className='flex flex-col gap-1.5'>
+              <label
+                htmlFor='email'
+                className='text-sm leading-7 tracking-[-0.02em] font-bold text-neutral-25'
+              >
+                Email
+              </label>
+              <div>
+                <input
+                  type='email'
+                  id='email'
+                  placeholder='Enter your email'
+                  className='py-2.25 w-full rounded-xl border border-neutral-800 bg-neutral-950 px-4 text-base text-neutral-25 leading-7.5 tracking-[-0.02em] placeholder:text-neutral-600 placeholder:font-normal focus:border-accent-red focus:outline-none focus:ring-1 focus:ring-accent-red'
+                  {...register('email')}
+                />
+              </div>
+              {errors.email && (
                 <p className='text-sm leading-7 tracking-[-0.03em] text-accent-red'>
                   Text Helper
                 </p>
@@ -152,30 +210,6 @@ function RegisterForm() {
               )}
             </div>
 
-            {/* Email */}
-            <div className='flex flex-col gap-1.5'>
-              <label
-                htmlFor='email'
-                className='text-sm leading-7 tracking-[-0.02em] font-bold text-neutral-25'
-              >
-                Email
-              </label>
-              <div>
-                <input
-                  type='email'
-                  id='email'
-                  placeholder='Enter your email'
-                  className='py-2.25 w-full rounded-xl border border-neutral-800 bg-neutral-950 px-4 text-base text-neutral-25 leading-7.5 tracking-[-0.02em] placeholder:text-neutral-600 placeholder:font-normal focus:border-accent-red focus:outline-none focus:ring-1 focus:ring-accent-red'
-                  {...register('email')}
-                />
-              </div>
-              {errors.email && (
-                <p className='text-sm leading-7 tracking-[-0.03em] text-accent-red'>
-                  Text Helper
-                </p>
-              )}
-            </div>
-
             {/* Password */}
             <div className='flex flex-col gap-1.5'>
               <label
@@ -188,7 +222,7 @@ function RegisterForm() {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   id='password'
-                  placeholder='Password'
+                  placeholder='Enter your password'
                   className='py-2.25 w-full rounded-xl border border-neutral-800 bg-neutral-950 px-4 text-base text-neutral-25 leading-7.5 tracking-[-0.02em] placeholder:text-neutral-600 placeholder:font-normal focus:border-accent-red focus:outline-none focus:ring-1 focus:ring-accent-red'
                   {...register('password')}
                 />
@@ -217,9 +251,9 @@ function RegisterForm() {
               </label>
               <div className='relative'>
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showConfirmPassword ? 'text' : 'password'}
                   id='password'
-                  placeholder='Password'
+                  placeholder='Enter your confirm password'
                   className='py-2.25 w-full rounded-xl border border-neutral-800 bg-neutral-950 px-4 text-base text-neutral-25 leading-7.5 tracking-[-0.02em] placeholder:text-neutral-600 placeholder:font-normal focus:border-accent-red focus:outline-none focus:ring-1 focus:ring-accent-red'
                   {...register('confirmPassword' as any)}
                 />
