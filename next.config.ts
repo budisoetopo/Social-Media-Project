@@ -1,24 +1,19 @@
 import type { NextConfig } from 'next';
 
-const path = require('path');
-
-const nextConfig = {
-  devIndicators: false,
-
+const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'i.pravatar.cc',
+        hostname: 'ui-avatars.com',
       },
       {
         protocol: 'https',
         hostname: 'res.cloudinary.com',
-        pathname: '/**', // Allows any image path from Cloudinary
+      },
+      {
+        protocol: 'https',
+        hostname: 'be-social-media-api-production.up.railway.app',
       },
     ],
   },

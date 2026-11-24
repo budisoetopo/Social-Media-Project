@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Bell, Settings, User as UserIcon, LogOut } from 'lucide-react';
+import { Bell, Settings, User as UserIcon, LogOut, Search } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import Image from 'next/image';
 import { Logo } from '../../../public/images/imageHandler';
@@ -54,7 +54,7 @@ function Navbar() {
           : 'bg-[#050505] py-4'
       }`}
     >
-      <div className='w-full max-w-360 mx-auto px-4 md:px-30 flex items-center justify-between'>
+      <div className='w-full max-w-360 mx-auto px-4 md:px-30 flex items-center justify-between relative'>
         {/* Logo */}
         <Link href='/' className='flex items-center gap-2'>
           <div className='text-2xl leading-9 font-bold flex items-center gap-2.75 text-neutral-25'>
@@ -66,6 +66,21 @@ function Navbar() {
             Sociality
           </div>
         </Link>
+
+        {/* Centered Search Bar */}
+        <div className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-87.5 md:max-w-112.5 hidden md:block'>
+          <div className='relative w-full'>
+            <Search
+              className='absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500'
+              size={18}
+            />
+            <input
+              type='text'
+              placeholder='Search posts, people, or tags...'
+              className='w-full bg-[#141414] border border-neutral-800 rounded-full py-2.5 pl-11 pr-4 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] transition-all'
+            />
+          </div>
+        </div>
 
         {/* Right Side */}
         <div className='flex items-center gap-4'>
