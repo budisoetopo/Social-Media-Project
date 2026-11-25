@@ -9,7 +9,9 @@ import {
   type SubmitEvent,
 } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/authStore';
+import api from '@/lib/api/axios';
 import Navbar from '@/components/layout/Navbar';
 import BottomNav from '@/components/layout/BottomNav';
 import { usePosts } from '@/features/auth/hooks/usePosts';
@@ -26,8 +28,21 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 
+// Normalizer (keep in sync with useLogin.ts — or extract to a shared file)
+function normalizeUser(raw: any) {
+  if (!raw) return raw;
+  return {
+    ...raw,
+    avatar:
+      raw.avatar ?? raw.avatarUrl ?? raw.profilePicture ?? raw.image ?? null,
+    bio: raw.bio ?? '',
+    phone: raw.phone ?? '',
+  };
+}
+
 export default function ProfilePage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { user, token, isAuthenticated, setAuth } = useAuthStore();
   const { data: allPosts, isLoading } = usePosts();
 
@@ -45,6 +60,33 @@ export default function ProfilePage() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // On mount, refetch /api/me and sync the store.
+  // Make sure profile is always server's view, not stale Zustand state.
+  const {
+    data: freshUser,
+    isLoading: isMeLoading,
+    isError: isMeError,
+  } = useQuery({
+    queryKey: ['me', token],
+    queryFn: async () => {
+      const res = await api.get('/api/me', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return normalizeUser(
+        res.data?.data?.user ?? res.data?.user ?? res.data?.data
+      );
+    },
+    enabled: !!token,
+    staleTime: 0,
+    retry: 1,
+  });
+
+  // When fresh user arrives, only sync to store. Form is populated on Edit Profile click.
+  useEffect(() => {
+    if (!freshUser || !token) return;
+    setAuth({ ...(user ?? {}), ...freshUser }, token);
+  }, [freshUser, token, setAuth]);
 
   // Redirect to Login Page if not logged in
   useEffect(() => {
@@ -77,10 +119,39 @@ export default function ProfilePage() {
         setError('Maximum file size is 5 MB');
         return;
       }
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
       setFile(selectedFile);
       setPreviewUrl(URL.createObjectURL(selectedFile));
       setError(null);
     }
+  };
+
+  // Populate the form when user My Profile.
+  // Prefers freshUser (server truth) but falls back to user (Zustand from login).
+  const openEditForm = () => {
+    const source = freshUser ?? user;
+    if (!source) {
+      setError('Could not load your profile. Try refreshing.');
+      return;
+    }
+    setName(source.name ?? '');
+    setUsername(source.username ?? '');
+    setPhone(source.phone ?? '');
+    setBio(source.bio ?? '');
+    setFile(null);
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(null);
+    setError(null);
+    setIsEditing(true);
+  };
+
+  // One-click cancel that discards unsaved changes
+  const cancelEdit = () => {
+    setIsEditing(false);
+    setFile(null);
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(null);
+    setError(null);
   };
 
   const handleUpdateProfile = async (e: SubmitEvent<HTMLFormElement>) => {
@@ -106,39 +177,75 @@ export default function ProfilePage() {
           method: 'PATCH',
           headers: {
             Authorization: `Bearer ${token.trim()}`,
-            accept: '*/*',
+            accept: 'application/json',
           },
           body: formData,
         }
       );
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to update profile');
+      const rawText = await response.text();
+      let data: any = {};
+      try {
+        data = rawText ? JSON.parse(rawText) : {};
+      } catch {
+        throw new Error(
+          `Server error (${response.status}): ${rawText.slice(0, 200)}`
+        );
       }
 
-      // Update Zustand store with the new user data
-      const updatedUser = data.data?.user || data.user || data.data;
+      if (!response.ok) {
+        console.error('❌ PATCH /api/me failed', {
+          status: response.status,
+          body: data,
+        });
+        throw new Error(
+          data.message ||
+            data.error ||
+            `Update failed (${response.status}). Check the console for details.`
+        );
+      }
 
-      // Merge new avatar URL with existing user data
-      const newAvatarUrl =
-        updatedUser?.avatar || updatedUser?.avatarUrl || data.data?.avatarUrl;
-
-      setAuth(
-        {
-          ...user,
-          name,
-          username,
-          phone,
-          bio,
-          avatar: newAvatarUrl,
-        },
-        token
+      // Use SERVER response as truth, not form state.
+      // Then refetch /api/me to confirm persistence — the key change.
+      const patchedUser = normalizeUser(
+        data.data?.user ?? data.user ?? data.data
       );
+
+      // Confirmation GET (server truth)
+      let confirmedUser = patchedUser;
+      try {
+        const me = await api.get('/api/me', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        confirmedUser = normalizeUser(
+          me.data?.data?.user ?? me.data?.user ?? me.data?.data
+        );
+      } catch (verifyErr) {
+        console.warn(
+          '⚠️ PATCH succeeded but GET /api/me failed — using PATCH response.',
+          verifyErr
+        );
+      }
+
+      // Keep the token
+      const nextToken = data?.data?.token ?? data?.token ?? token;
+
+      // Warn if server didn't return the uploaded avatar
+      if (file && !confirmedUser?.avatar) {
+        console.warn(
+          '⚠️ Avatar was uploaded but server did not return an avatar URL. ' +
+            'The backend likely did not persist the file. Check the PATCH handler.'
+        );
+      }
+
+      setAuth({ ...(user ?? {}), ...confirmedUser }, nextToken);
+
+      // Refresh cached /api/me
+      queryClient.invalidateQueries({ queryKey: ['me'] });
 
       setIsEditing(false);
       setFile(null);
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
       setPreviewUrl(null);
     } catch (err: any) {
       console.error('Profile update error:', err);
@@ -164,7 +271,7 @@ export default function ProfilePage() {
             <div className='flex items-center justify-between mb-6'>
               <h2 className='text-xl font-bold text-white'>Edit Profile</h2>
               <button
-                onClick={() => setIsEditing(false)}
+                onClick={cancelEdit}
                 className='text-sm text-neutral-400 hover:text-white transition'
               >
                 Cancel
@@ -183,6 +290,7 @@ export default function ProfilePage() {
                       src={previewUrl}
                       alt='Preview'
                       fill
+                      unoptimized
                       className='object-cover'
                     />
                   ) : user?.avatar ? (
@@ -205,7 +313,7 @@ export default function ProfilePage() {
                 </div>
                 <input
                   type='file'
-                  accept='image/*'
+                  accept='image/png,image/jpeg,image/webp'
                   ref={fileInputRef}
                   onChange={handleFileChange}
                   className='hidden'
@@ -286,6 +394,11 @@ export default function ProfilePage() {
                 )}
               </button>
             </form>
+          </div>
+        ) : isMeLoading ? (
+          // Loader while /api/me resolves
+          <div className='flex justify-center py-32'>
+            <Loader2 className='animate-spin text-[#8b5cf6]' size={32} />
           </div>
         ) : (
           <div className='animate-in fade-in duration-300'>

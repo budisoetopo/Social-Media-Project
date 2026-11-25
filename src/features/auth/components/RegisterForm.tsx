@@ -42,7 +42,10 @@ function RegisterForm() {
         password: values.password,
       },
       {
-        onSuccess: () => {},
+        onSuccess: () => {
+          // Navigate to login, user can sign in
+          router.push('/login?registered=1');
+        },
         onError: (err: any) => {
           console.error('Registration error in component:', err);
 
@@ -250,7 +253,7 @@ function RegisterForm() {
               <div className='relative'>
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
-                  id='password'
+                  id='confirmPassword'
                   placeholder='Enter your confirm password'
                   className='py-2.25 w-full rounded-xl border border-neutral-800 bg-neutral-950 px-4 text-base text-neutral-25 leading-7.5 tracking-[-0.02em] placeholder:text-neutral-600 placeholder:font-normal focus:border-accent-red focus:outline-none focus:ring-1 focus:ring-accent-red'
                   {...register('confirmPassword' as any)}
