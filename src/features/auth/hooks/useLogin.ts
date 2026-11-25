@@ -19,12 +19,12 @@ export function useLogin() {
     },
     onSuccess: (responseData) => {
       console.log('FULL LOGIN RESPONSE:', responseData);
+
       const user = responseData.data?.user || responseData.user;
-      const token =
-        responseData.data?.token ||
-        responseData.data?.accessToken ||
-        responseData.token ||
-        responseData.accessToken;
+      const token = responseData.data?.token || responseData.token;
+
+      console.log('Extracted User:', user);
+      console.log('Extracted Token:', token);
 
       if (!token) {
         console.error('❌ CRITICAL: No token found in the response!');
@@ -32,6 +32,8 @@ export function useLogin() {
       }
 
       setAuth(user, token);
+
+      console.log('Zustand state after setAuth:', useAuthStore.getState());
     },
   });
 }

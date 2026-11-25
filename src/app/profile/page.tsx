@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import Navbar from '@/components/layout/Navbar';
-import ProfileSidebar from '@/components/layout/ProfileSidebar';
+import { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
+import Navbar from '@/components/layout/Navbar';
 import Image from 'next/image';
 import { Avatar_Image } from '../../../public/images/imageHandler';
 import { X, Loader2 } from 'lucide-react';

@@ -1,23 +1,31 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import { useQueryClient } from '@tanstack/react-query';
 import Navbar from '@/components/layout/Navbar';
 import { ArrowLeft, Image as ImageIcon, Loader2, X } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useAuthStore } from '@/store/authStore';
 
 export default function CreatePostPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { token, isAuthenticated } = useAuthStore();
 
   const [caption, setCaption] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!isAuthenticated || !token) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, token, router]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -26,59 +34,66 @@ export default function CreatePostPage() {
         setError('Maximum file size is 5 MB');
         return;
       }
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-      if (!allowedTypes.includes(selectedFile.type)) {
-        setError('Only .jpg, .png, and .webp files are allowed');
-        return;
-      }
       setFile(selectedFile);
       setPreviewUrl(URL.createObjectURL(selectedFile));
       setError(null);
     }
   };
 
-  const createPostMutation = useMutation({
-    mutationFn: async () => {
-      // TEMPORARY HARDCODED TOKEN FROM YOUR CURL COMMAND
-      const hardcodedToken =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiWGlhbyBZYW4iLCJpYXQiOjE3OTU1MDIzMDksImV4cCI6MTc5NjEwNzEwOX0.0KcFIJfeTphR3fJbZ0SsvoEhqXvAVV-LnmTGOdCn7Zo';
-
-      const formData = new FormData();
-      formData.append('caption', caption);
-      if (file) {
-        formData.append('image', file);
-      }
-
-      const response = await axios.post(
-        'https://be-social-media-api-production.up.railway.app/api/posts',
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${hardcodedToken}`,
-            accept: '*/*',
-          },
-        }
-      );
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
-      router.push('/');
-    },
-    onError: (err: any) => {
-      console.error('Mutation Error:', err?.response?.data || err.message);
-      setError(err?.response?.data?.message || 'Failed to create post.');
-    },
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file) {
       setError('Please select an image for your post.');
       return;
     }
+    if (!token) {
+      setError('You must be logged in.');
+      return;
+    }
+
     setError(null);
-    createPostMutation.mutate();
+    setIsSubmitting(true);
+
+    // FIXED: Trim the token to remove any invisible newlines or spaces
+    const cleanToken = token.trim();
+
+    try {
+      const formData = new FormData();
+      formData.append('caption', caption);
+      formData.append('image', file);
+
+      // Debug exactly what is being sent
+      console.log('--- FETCH REQUEST ---');
+      console.log('Token length:', cleanToken.length); // Check if this matches the cURL token length
+      console.log('Token sent:', `Bearer ${cleanToken}`);
+
+      const response = await fetch(
+        'https://be-social-media-api-production.up.railway.app/api/posts',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${cleanToken}`,
+            accept: '*/*',
+          },
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || `Error ${response.status}`);
+      }
+
+      // Success!
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      router.push('/');
+    } catch (err: any) {
+      console.error('Fetch Error Caught:', err.message);
+      setError(err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -92,9 +107,7 @@ export default function CreatePostPage() {
           >
             <ArrowLeft size={20} />
           </Link>
-          <h1 className='text-xl font-bold'>
-            Create New Post (Isolation Test)
-          </h1>
+          <h1 className='text-xl font-bold'>Create New Post</h1>
         </div>
 
         <form onSubmit={handleSubmit} className='flex flex-col gap-6'>
@@ -131,7 +144,7 @@ export default function CreatePostPage() {
             )}
             <input
               type='file'
-              accept='.jpg,.jpeg,.png,.webp'
+              accept='image/*'
               ref={fileInputRef}
               onChange={handleFileChange}
               className='hidden'
@@ -159,14 +172,11 @@ export default function CreatePostPage() {
 
           <button
             type='submit'
-            disabled={createPostMutation.isPending}
+            disabled={isSubmitting}
             className='mt-4 w-full flex items-center justify-center gap-2 bg-[#8b5cf6] hover:bg-purple-600 text-white font-bold py-3 rounded-full transition-colors disabled:opacity-50'
           >
-            {createPostMutation.isPending ? (
-              <>
-                <Loader2 className='animate-spin' size={20} />
-                Posting...
-              </>
+            {isSubmitting ? (
+              <Loader2 className='animate-spin' size={20} />
             ) : (
               'Share Post'
             )}

@@ -31,8 +31,6 @@ function RegisterForm() {
   const onSubmit = (values: RegisterFormValues) => {
     setError(null);
 
-    const generatedEmail = `${values.username.toLowerCase().replace(/\s+/g, '')}@sociality.app`;
-
     console.log('Submitting registration with payload:', values);
 
     registerMutation.mutate(
@@ -139,7 +137,7 @@ function RegisterForm() {
             </div>
 
             {/* Username */}
-            {/* <div className='flex flex-col gap-1.5'>
+            <div className='flex flex-col gap-1.5'>
               <label
                 htmlFor='username'
                 className='text-sm leading-7 tracking-[-0.02em] font-bold text-neutral-25'
@@ -160,7 +158,7 @@ function RegisterForm() {
                   Text Helper
                 </p>
               )}
-            </div> */}
+            </div>
 
             {/* Email */}
             <div className='flex flex-col gap-1.5'>
