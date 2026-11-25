@@ -4,7 +4,7 @@ import { useAuthStore } from '@/store/authStore';
 const api = axios.create({
   baseURL:
     process.env.NEXT_PUBLIC_API_URL ||
-    'https://be-restaurant-production.up.railway.app',
+    'https://be-social-media-api-production.up.railway.app',
   headers: { 'Content-Type': 'application/json' },
 });
 
